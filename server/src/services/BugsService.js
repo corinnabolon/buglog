@@ -51,12 +51,21 @@ class BugsService {
     if (bugToClose.creatorId.toString() != userId) {
       throw new Forbidden(`Not your bug to close`)
     }
-    bugToClose.closed = true
+    bugToClose.closed = !bugToClose.closed
     bugToClose.closedDate = new Date()
     await bugToClose.save()
     return bugToClose
   }
-  //TODO: come back to delete test
+
+  // TODO: figure out why this isn't passing the test
+
+  // async closeBug(bugId, userId) {
+  //   const bug = await this.getBugById(bugId)
+  //   if (bug.creatorId.toString() != userId) { throw new Forbidden("NOT ALLOWED") }
+  //   bug.closed = !bug.closed
+  //   await bug.save()
+  //   return BadRequest
+  // }
 
 
 }

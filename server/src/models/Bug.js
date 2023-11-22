@@ -20,3 +20,12 @@ BugSchema.virtual('creator', {
   justOne: true,
   ref: 'Account'
 })
+
+
+// From Jeremy's code:
+// BugSchema.post('save', doc => {
+//   if (doc.closed) {
+//     doc.closedDate = new Date()
+//     doc.save()
+//   }
+// })

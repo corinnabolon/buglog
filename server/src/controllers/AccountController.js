@@ -1,6 +1,7 @@
 import { Auth0Provider } from '@bcwdev/auth0provider'
 import { accountService } from '../services/AccountService'
 import BaseController from '../utils/BaseController'
+import { trackedBugsService } from "../services/TrackedBugsService.js"
 
 export class AccountController extends BaseController {
   constructor() {
@@ -8,6 +9,8 @@ export class AccountController extends BaseController {
     this.router
       .use(Auth0Provider.getAuthorizedUserInfo)
       .get('', this.getUserAccount)
+      .get('/trackedbugs', this.getLoggedInUsersTrackedBugs)
+
   }
 
   async getUserAccount(req, res, next) {
@@ -18,4 +21,15 @@ export class AccountController extends BaseController {
       next(error)
     }
   }
+
+  async getLoggedInUsersTrackedBugs(req, res, next) {
+    try {
+      let userId = req.userInfo.id
+      let trackedBugs = await trackedBugsService.getLoggedInUsersTrackedBugs(userId)
+      res.send(trackedBugs)
+    } catch (error) {
+      next(error)
+    }
+  }
+
 }

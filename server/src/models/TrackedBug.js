@@ -21,3 +21,5 @@ TrackedBugSchema.virtual('tracker', {
   ref: 'Account',
   justOne: true
 })
+
+TrackedBugSchema.index({ bugId: 1, accountId: 1 }, { unique: true })

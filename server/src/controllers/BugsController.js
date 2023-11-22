@@ -72,6 +72,17 @@ export class BugsController extends BaseController {
     }
   }
 
+  // async closeBug(req, res, next) {
+  //   try {
+  //     const bugId = req.params.bugId
+  //     const userId = req.userInfo.id
+  //     const bug = await bugsService.closeBug(bugId, userId)
+  //     return res.send(bug)
+  //   } catch (error) {
+  //     next(error)
+  //   }
+  // }
+
   async getAllNotesByBugId(req, res, next) {
     try {
       let bugId = req.params.bugId
