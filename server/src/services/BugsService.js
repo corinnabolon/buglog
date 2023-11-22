@@ -60,16 +60,6 @@ class BugsService {
     return bugToClose
   }
 
-  // TODO: figure out why this isn't passing the test
-
-  // async closeBug(bugId, userId) {
-  //   const bug = await this.getBugById(bugId)
-  //   if (bug.creatorId.toString() != userId) { throw new Forbidden("NOT ALLOWED") }
-  //   bug.closed = !bug.closed
-  //   await bug.save()
-  //   return BadRequest
-  // }
-
 
 }
 
