@@ -45,7 +45,7 @@ class BugsService {
 
   async closeBug(userId, bugId) {
     let bugToClose = await this.getBugById(bugId)
-    if (bugToClose.closed) {
+    if (bugToClose.closed == true) {
       throw new BadRequest(`This bug has already been closed`)
     }
     if (bugToClose.creatorId.toString() != userId) {
@@ -56,6 +56,7 @@ class BugsService {
     await bugToClose.save()
     return bugToClose
   }
+  //TODO: come back to delete test
 
 
 }
