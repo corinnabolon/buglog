@@ -31,6 +31,9 @@ class BugsService {
     if (bugToUpdate.creatorId.toString() != userId) {
       throw new Forbidden(`Not your bug to update`)
     }
+    if (bugToUpdate.closed) {
+      throw new Forbidden(`This bug is closed, so cannot be edited.`)
+    }
 
     bugToUpdate.title = bugData.title || bugToUpdate.title
     bugToUpdate.description = bugData.description || bugToUpdate.description
