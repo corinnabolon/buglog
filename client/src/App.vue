@@ -102,6 +102,20 @@ footer {
   color: var(--theme-brown);
 }
 
+.theme-btn:disabled {
+  background-color: var(--theme-brown);
+  border: 1px solid var(--theme-limegreen);
+  color: var(--theme-beige);
+  border-radius: 0%;
+}
+
+.theme-btn-closed:disabled {
+  background-color: var(--theme-limegreen);
+  border: 3px solid var(--theme-brown);
+  color: var(--theme-brown);
+  border-radius: 0%;
+}
+
 .blue-box {
   background-color: var(--theme-blue);
   border: 1px solid var(--theme-brown);

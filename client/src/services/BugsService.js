@@ -19,7 +19,7 @@ class BugsService {
   }
 
   async closeBug(bugId) {
-    let res = api.delete(`api/bugs/${bugId}`)
+    let res = await api.delete(`api/bugs/${bugId}`)
     AppState.activeBug = new Bug(res.data)
   }
 

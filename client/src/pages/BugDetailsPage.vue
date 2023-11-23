@@ -27,30 +27,31 @@
           <p class="mb-0">Last Updated:</p>
           <p>{{ activeBug.updatedAt.toLocaleString() }}</p>
         </div>
-        <div v-if="activeBug.closed">
-          <input @change="closeBug()" v-if="activeBug.creatorId == account.id" type="checkbox" class="toggle" disabled
-            title="Open bug.">
-          <input v-else type="checkbox" class="toggle" disabled title="The bug's status can only be changed by the owner">
+        <div v-if="!activeBug.closed">
+          <button v-if="activeBug.creatorId == account.id" @click="closeBug()" type="button" class="btn theme-btn me-2"
+            title="Close bug when resolved">Close Bug</button>
+          <button v-else type="text" disabled class="btn theme-btn me-2">
+            This Bug Is Open
+          </button>
         </div>
         <div v-else>
-          <input @change="closeBug()" v-if="activeBug.creatorId == account.id" type="checkbox" checked class="toggle"
-            title="Close bug.">
-          <input v-else type="checkbox" class="toggle" disabled checked
-            title="The bug's status can only be changed by the owner">
+          <button type="text" disabled class="btn theme-btn-closed fw-bold me-2">This Bug Is Closed</button>
         </div>
       </div>
       <div class="col-11 my-4 mx-2 theme-brown-text">
         <p>{{ activeBug.description }}</p>
       </div>
-      <div v-if="account.id" class="col-11 d-flex align-items-center">
-        <div v-if="!isTracker">
-          <button @click="trackBug()" class="btn theme-btn my-3 mx-2">Track</button>
-        </div>
-        <div v-else>
-          <button @click="unTrackBug()" class="btn theme-btn my-3 mx-2">Un-track</button>
+      <div class="col-11 d-flex align-items-center">
+        <div v-if="account.id && !activeBug.closed">
+          <div v-if="isTracker">
+            <button @click="unTrackBug()" class="btn theme-btn my-3 mx-2">Un-track</button>
+          </div>
+          <div v-else>
+            <button @click="trackBug()" class="btn theme-btn my-3 mx-2">Track</button>
+          </div>
         </div>
         <div v-for="bug in trackedBugs" :key="bug.id">
-          <img :src="bug.tracker.picture" :alt="bug.tracker.name" class="tracker-picture mx-1">
+          <img :src="bug.tracker.picture" :alt="bug.tracker.name" class="tracker-picture mx-1 my-3">
         </div>
       </div>
     </section>
@@ -99,7 +100,7 @@ export default {
       trackedBugs: computed(() => AppState.trackedBugs),
       account: computed(() => AppState.account),
       isTracker: computed(() =>
-        AppState.trackedBugs.find((trackedBug) => trackedBug.accountId = AppState.account.id)
+        AppState.trackedBugs.find((trackedBug) => trackedBug.accountId == AppState.account.id && trackedBug.bugId == AppState.activeBug.id)
       ),
 
 
@@ -130,14 +131,10 @@ export default {
             if (!wantsToClose) {
               return
             }
-          } else {
-            let wantsToOpen = await Pop.confirm("Are you sure you want to re-open this bug?")
-            if (!wantsToOpen) {
-              return
-            }
           }
           let bugId = route.params.bugId
           await bugsService.closeBug(bugId)
+          Pop.success("This bug is now closed.")
         } catch (error) {
           Pop.error()
         }
@@ -181,55 +178,6 @@ export default {
     width: auto;
     object-fit: cover;
     object-position: center;
-  }
-
-  //Toggle styling thanks to https://danklammer.com/articles/simple-css-toggle-switch/!
-  .toggle {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 85px;
-    height: 32px;
-    display: inline-block;
-    position: relative;
-    border-radius: 50px;
-    overflow: hidden;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    background-color: #707070;
-    transition: background-color ease 0.3s;
-  }
-
-  .toggle:before {
-    content: "OPEN CLOSED";
-    display: block;
-    position: absolute;
-    z-index: 2;
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    left: 2px;
-    top: 2px;
-    border-radius: 50%;
-    font: 10px/28px Helvetica;
-    text-transform: uppercase;
-    font-weight: bold;
-    text-indent: -35px;
-    word-spacing: 37px;
-    color: #fff;
-    text-shadow: -1px -1px rgba(0, 0, 0, 0.15);
-    white-space: nowrap;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
-  }
-
-  .toggle:checked {
-    background-color: #4CD964;
-  }
-
-  .toggle:checked:before {
-    left: 55px;
   }
 }
 </style>
