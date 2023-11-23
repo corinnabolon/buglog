@@ -11,6 +11,13 @@ class BugsService {
     AppState.bugs = res.data.map((bug) => new Bug(bug))
   }
 
+  async getBugById(bugId) {
+    AppState.activeBug = null
+    let res = await api.get(`api/bugs/${bugId}`, bugId)
+    logger.log("Got bug", res.data)
+    AppState.activeBug = new Bug(res.data)
+  }
+
 }
 
 export const bugsService = new BugsService()
