@@ -10,19 +10,20 @@
       <div class="col-11 blue-box ">
         <section class="row theme-beige-text fw-bold fs-3">
           <div class="col-3">
-            Title
+            <p>Title</p>
           </div>
           <div class="col-2">
-            Priority
+            <p>Priority</p>
           </div>
           <div class="col-2">
-            Reported By
+            <p>Reported By</p>
           </div>
           <div class="col-3">
-            Last Updated
+            <p>Last Updated</p>
           </div>
-          <div class="col-2">
-            All Bugs
+          <div class="col-2 d-flex align-items-center">
+            <input @change="flipWantsAllAndWantsClosed()" type="checkbox" class="toggle"
+              :title="[wantsClosedBugs ? 'Click to see all bugs.' : 'Click to see closed bugs only.']">
           </div>
         </section>
       </div>
@@ -30,8 +31,15 @@
     <section class="row bug-list-container">
       <div class="col-1"></div>
       <div class="col-11">
-        <div v-for="bug in bugs" :key="bug.id" class="row bug-list">
-          <BugListComponent :bugProp="bug" />
+        <div v-if="!wantsClosedBugs">
+          <div v-for="bug in bugs" :key="bug.id" class="row bug-list">
+            <BugListComponent :bugProp="bug" />
+          </div>
+        </div>
+        <div v-else>
+          <div v-for="bug in closedBugs" :key="bug.id" class="row bug-list">
+            <BugListComponent :bugProp="bug" />
+          </div>
         </div>
       </div>
     </section>
@@ -41,7 +49,7 @@
 <script>
 import Pop from "../utils/Pop.js"
 import { bugsService } from "../services/BugsService.js"
-import { computed, onMounted } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { AppState } from "../AppState.js"
 
 export default {
@@ -50,6 +58,8 @@ export default {
     onMounted(() => {
       getBugs()
     })
+
+    let wantsClosedBugs = ref(false)
 
     async function getBugs() {
       try {
@@ -60,8 +70,17 @@ export default {
     }
 
     return {
+      wantsClosedBugs,
       bugs: computed(() => AppState.bugs),
-      account: computed(() => AppState.account)
+      closedBugs: computed(() => {
+        return AppState.bugs.filter(
+          (bug) => bug.closed)
+      }),
+      account: computed(() => AppState.account),
+
+      flipWantsAllAndWantsClosed() {
+        wantsClosedBugs.value = !wantsClosedBugs.value
+      }
     }
   }
 }
@@ -81,5 +100,54 @@ export default {
   left: 2.5%;
   top: 70%;
   width: 95vw;
+}
+
+//Toggle styling thanks to https://danklammer.com/articles/simple-css-toggle-switch/!
+.toggle {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100px;
+  height: 32px;
+  display: inline-block;
+  position: relative;
+  border-radius: 50px;
+  overflow: hidden;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  background-color: var(--theme-green);
+  transition: background-color ease 0.3s;
+}
+
+.toggle:before {
+  content: "CLOSED ALL";
+  display: block;
+  position: absolute;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  background: var(--theme-beige);
+  left: 2px;
+  top: 1px;
+  border-radius: 50%;
+  font: 10px/28px Helvetica;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-indent: -50px;
+  word-spacing: 52px;
+  color: var(--theme-brown);
+  text-shadow: -1px -1px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+}
+
+.toggle:checked {
+  background-color: var(--theme-limegreen);
+}
+
+.toggle:checked:before {
+  left: 68px;
 }
 </style>
