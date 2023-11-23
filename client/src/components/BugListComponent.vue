@@ -10,15 +10,21 @@
       <div class="col-2">
         {{ bugProp.creator.name }}
       </div>
-      <div class="col-3 me-5">
+      <div class="col-3 me-2">
         {{ bugProp.updatedAt.toLocaleString() }}
       </div>
       <div class="col-2">
-        <div v-if="bugProp.closed">
-          Closed
+        <div v-if="bugProp.closed" class="d-flex">
+          <div class="p-width">
+            <p>Closed</p>
+          </div>
+          <div class="closed-circle"></div>
         </div>
-        <div v-else>
-          Open
+        <div v-else class="d-flex">
+          <div class="p-width">
+            <p>Open</p>
+          </div>
+          <div class="open-circle"></div>
         </div>
       </div>
     </div>
@@ -42,6 +48,10 @@ export default {
 
 
 <style lang="scss" scoped>
+p {
+  margin: 0;
+}
+
 .toggle {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -88,5 +98,25 @@ export default {
 
 .toggle:checked:before {
   left: 32px;
+}
+
+.closed-circle {
+  height: 5vh;
+  width: 5vh;
+  background-color: #4CD964;
+  border: 1px solid var(--theme-brown);
+  border-radius: 50%;
+}
+
+.open-circle {
+  height: 5vh;
+  width: 5vh;
+  background-color: firebrick;
+  border: 1px solid var(--theme-brown);
+  border-radius: 50%;
+}
+
+.p-width {
+  width: 7vw;
 }
 </style>

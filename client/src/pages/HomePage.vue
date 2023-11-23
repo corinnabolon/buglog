@@ -22,8 +22,8 @@
             <p>Last Updated</p>
           </div>
           <div class="col-2 d-flex align-items-center">
-            <input @change="flipWantsAllAndWantsClosed()" type="checkbox" class="toggle"
-              :title="[wantsClosedBugs ? 'Click to see all bugs.' : 'Click to see closed bugs only.']">
+            <input @change="flipWantsAllAndWantsOpen()" type="checkbox" class="toggle"
+              :title="[wantsOpenBugs ? 'Click to see all bugs.' : 'Click to see open bugs only.']">
           </div>
         </section>
       </div>
@@ -31,13 +31,13 @@
     <section class="row bug-list-container">
       <div class="col-1"></div>
       <div class="col-11">
-        <div v-if="!wantsClosedBugs">
+        <div v-if="!wantsOpenBugs">
           <div v-for="bug in bugs" :key="bug.id" class="row bug-list">
             <BugListComponent :bugProp="bug" />
           </div>
         </div>
         <div v-else>
-          <div v-for="bug in closedBugs" :key="bug.id" class="row bug-list">
+          <div v-for="bug in openBugs" :key="bug.id" class="row bug-list">
             <BugListComponent :bugProp="bug" />
           </div>
         </div>
@@ -59,7 +59,7 @@ export default {
       getBugs()
     })
 
-    let wantsClosedBugs = ref(false)
+    let wantsOpenBugs = ref(false)
 
     async function getBugs() {
       try {
@@ -70,16 +70,16 @@ export default {
     }
 
     return {
-      wantsClosedBugs,
+      wantsOpenBugs,
       bugs: computed(() => AppState.bugs),
-      closedBugs: computed(() => {
+      openBugs: computed(() => {
         return AppState.bugs.filter(
-          (bug) => bug.closed)
+          (bug) => bug.closed == false)
       }),
       account: computed(() => AppState.account),
 
-      flipWantsAllAndWantsClosed() {
-        wantsClosedBugs.value = !wantsClosedBugs.value
+      flipWantsAllAndWantsOpen() {
+        wantsOpenBugs.value = !wantsOpenBugs.value
       }
     }
   }
@@ -121,7 +121,7 @@ export default {
 }
 
 .toggle:before {
-  content: "CLOSED ALL";
+  content: "OPEN ALL";
   display: block;
   position: absolute;
   z-index: 2;
@@ -134,8 +134,8 @@ export default {
   font: 10px/28px Helvetica;
   text-transform: uppercase;
   font-weight: bold;
-  text-indent: -50px;
-  word-spacing: 52px;
+  text-indent: -43px;
+  word-spacing: 60px;
   color: var(--theme-brown);
   text-shadow: -1px -1px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
