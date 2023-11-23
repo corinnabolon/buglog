@@ -18,6 +18,11 @@ class BugsService {
     AppState.activeBug = new Bug(res.data)
   }
 
+  async closeBug(bugId) {
+    let res = api.delete(`api/bugs/${bugId}`)
+    AppState.activeBug = new Bug(res.data)
+  }
+
 }
 
 export const bugsService = new BugsService()
