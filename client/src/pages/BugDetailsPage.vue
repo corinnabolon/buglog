@@ -52,12 +52,44 @@
             </div>
           </div>
           <div v-for="bug in trackedBugs" :key="bug.id">
-            <img :src="bug.tracker.picture" :alt="bug.tracker.name" class="tracker-picture mx-1 my-3">
+            <img :src="bug.tracker.picture" :alt="bug.tracker.name" class="small-picture mx-1 my-3">
           </div>
         </div>
       </div>
-      <div class="mt-5 p-0" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
-        <div class="col-2 mx-0 green-box fs-2 fw-bold theme-brown-text text-center">Notes</div>
+      <div v-if="(notes && notes.length > 0 && activeBug.closed) || !activeBug.closed" class="col-12 mt-5 mb-3"
+        :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
+        <section class="row">
+          <div class="col-2 mx-0 green-box fs-2 fw-bold theme-brown-text text-center">
+            <p class="mb-0">Notes</p>
+          </div>
+        </section>
+        <section v-if="!activeBug.closed" class="row justify-content-center">
+          <div class="col-5 d-flex justify-content-center">
+            <form @submit.prevent="createNote()">
+              <textarea v-model="editable.body" class="mt-5 mb-3" placeholder="Add your notes for this bug here"
+                maxlength="1000"></textarea>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn theme-btn mb-3">Submit</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <secion class="row">
+          <div v-for="note in  notes " :key="note.id" class="ms-4 me-2">
+            <div class="d-flex">
+              <div class="col-2 mt-2 green-box fs-4 fw-bold theme-brown-text text-center d-flex justify-content-between">
+                <div class="d-flex p-2">
+                  <img :src="note.creator.picture" :alt="`${note.creator.name}'s picture'`" class="small-picture me-2">
+                  <p class="mb-0">{{ note.creator.name }}</p>
+                </div>
+                <p v-if="account.id == note.creator.id" class="me-2 text-danger"><i class="mdi mdi-close fs-5"></i></p>
+              </div>
+            </div>
+            <div class="col-10 mb-3" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
+              <p class="p-2 mb-0">{{ note.body }}</p>
+            </div>
+          </div>
+        </secion>
       </div>
     </section>
   </div>
@@ -66,20 +98,23 @@
 
 <script>
 import { AppState } from '../AppState';
-import { computed, reactive, onMounted } from 'vue';
+import { computed, reactive, onMounted, ref } from 'vue';
 import Pop from "../utils/Pop.js";
 import { bugsService } from "../services/BugsService.js";
 import { useRoute } from "vue-router";
 import { trackedBugsService } from "../services/TrackedBugsService.js"
+import { notesService } from "../services/NotesService.js"
 import { logger } from "../utils/Logger.js"
 
 export default {
   setup() {
     let route = useRoute()
+    let editable = ref({})
 
     onMounted(() => {
       getBugById()
       getTrackersOfBug()
+      getNotesByBugId()
     })
 
     async function getBugById() {
@@ -100,10 +135,21 @@ export default {
       }
     }
 
+    async function getNotesByBugId() {
+      try {
+        let bugId = route.params.bugId
+        await notesService.getNotesByBugId(bugId)
+      } catch (error) {
+        Pop.error(error)
+      }
+    }
+
     return {
+      editable,
       activeBug: computed(() => AppState.activeBug),
       trackedBugs: computed(() => AppState.trackedBugs),
       account: computed(() => AppState.account),
+      notes: computed(() => AppState.notes),
       isTracker: computed(() =>
         AppState.trackedBugs.find((trackedBug) => trackedBug.accountId == AppState.account.id && trackedBug.bugId == AppState.activeBug.id)
       ),
@@ -143,6 +189,18 @@ export default {
         } catch (error) {
           Pop.error()
         }
+      },
+
+      async createNote() {
+        try {
+          let noteData = editable.value
+          noteData.bugId = route.params.bugId
+          await notesService.createNote(noteData)
+          Pop.success("Note posted!")
+          editable.value = {}
+        } catch (error) {
+          Pop.error(error)
+        }
       }
 
     }
@@ -152,6 +210,11 @@ export default {
 
 
 <style lang="scss" scoped>
+textarea {
+  width: 50vw;
+  height: 30vh;
+}
+
 .green-box {
   background-color: var(--theme-green);
   border: 1px solid var(--theme-brown);
@@ -186,7 +249,7 @@ export default {
   object-position: center;
 }
 
-.tracker-picture {
+.small-picture {
   height: 6vh;
   width: auto;
   object-fit: cover;

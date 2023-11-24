@@ -2,12 +2,12 @@
   <div class="modal fade" id="bugCreatorModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="bugCreatorModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content theme-beige-bg theme-brown-text">
         <div class="modal-header">
-          <p class="modal-title fs-5" id="bugCreatorModalLabel">Bug Report</p>
+          <p class="modal-title fs-4" id="bugCreatorModalLabel">Bug Report</p>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body fs-5">
           <form @submit.prevent="createBug()">
             <div class="mb-3">
               <label for="bugTitle" class="form-label">Title</label>
