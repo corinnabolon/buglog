@@ -23,6 +23,13 @@ class BugsService {
     AppState.activeBug = new Bug(res.data)
   }
 
+  async createBug(bugData) {
+    let res = await api.post(`api/bugs`, bugData)
+    let newBug = new Bug(res.data)
+    AppState.bugs.push(newBug)
+    return newBug
+  }
+
 }
 
 export const bugsService = new BugsService()

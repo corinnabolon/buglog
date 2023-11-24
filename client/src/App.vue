@@ -7,12 +7,14 @@
   </main>
   <footer>
   </footer>
+  <BugCreatorModal />
 </template>
 
 <script>
 import { computed } from 'vue'
 import { AppState } from './AppState'
 import Navbar from './components/Navbar.vue'
+import BugCreatorModal from "./components/BugCreatorModal.vue"
 
 export default {
   setup() {
@@ -20,7 +22,7 @@ export default {
       appState: computed(() => AppState)
     }
   },
-  components: { Navbar }
+  components: { Navbar, BugCreatorModal }
 }
 </script>
 <style lang="scss">

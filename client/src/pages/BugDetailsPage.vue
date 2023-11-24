@@ -12,16 +12,16 @@
     <section class="row justify-content-end me-2">
       <div class="col-11 blue-box"></div>
     </section>
-    <section class="row bug-details-container">
+    <section class="row bug-details-container" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
       <div class="col-12 my-3 d-flex justify-content-between theme-brown-text">
         <img :src="activeBug.creator.picture" alt="Bug Creator Picture" class="creator-picture">
         <div>
           <p class="mb-0">Reported by:</p>
           <p>{{ activeBug.creator.name }}</p>
         </div>
-        <div>
+        <div :class="[activeBug.priority == 5 ? 'danger-border px-2' : '']">
           <p class="mb-0">Priority:</p>
-          <p>{{ activeBug.priority }}</p>
+          <p class="mb-0">{{ activeBug.priority }}</p>
         </div>
         <div>
           <p class="mb-0">Last Updated:</p>
@@ -164,20 +164,27 @@ export default {
   top: 55%;
   width: 83vw;
   background-color: var(--theme-beige);
+}
+
+.limegreen-border {
   border: 2px solid var(--theme-limegreen);
+}
 
-  .creator-picture {
-    height: 10vh;
-    width: auto;
-    object-fit: cover;
-    object-position: center;
-  }
+.danger-border {
+  border: 2px solid firebrick;
+}
 
-  .tracker-picture {
-    height: 6vh;
-    width: auto;
-    object-fit: cover;
-    object-position: center;
-  }
+.creator-picture {
+  height: 10vh;
+  width: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+.tracker-picture {
+  height: 6vh;
+  width: auto;
+  object-fit: cover;
+  object-position: center;
 }
 </style>
