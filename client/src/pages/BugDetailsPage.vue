@@ -12,48 +12,52 @@
     <section class="row justify-content-end me-2">
       <div class="col-11 blue-box"></div>
     </section>
-    <section class="row bug-details-container"
-      :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
-      <div class="col-12 my-3 d-flex justify-content-between theme-brown-text">
-        <img :src="activeBug.creator.picture" alt="Bug Creator Picture" class="creator-picture">
-        <div>
-          <p class="mb-0">Reported by:</p>
-          <p>{{ activeBug.creator.name }}</p>
-        </div>
-        <div :class="[activeBug.priority == 5 ? 'danger-border px-2' : '']">
-          <p class="mb-0">Priority:</p>
-          <p class="mb-0">{{ activeBug.priority }}</p>
-        </div>
-        <div>
-          <p class="mb-0">Last Updated:</p>
-          <p>{{ activeBug.updatedAt.toLocaleString() }}</p>
-        </div>
-        <div v-if="!activeBug.closed">
-          <button v-if="activeBug.creatorId == account.id" @click="closeBug()" type="button" class="btn theme-btn me-2"
-            title="Close bug when resolved">Close Bug</button>
-          <button v-else type="text" disabled class="btn theme-btn me-2">
-            This Bug Is Open
-          </button>
-        </div>
-        <div v-else>
-          <button type="text" disabled class="btn theme-btn-closed fw-bold me-2">This Bug Is Closed</button>
-        </div>
-      </div>
-      <div class="col-11 my-4 mx-2 theme-brown-text">
-        <p>{{ activeBug.description }}</p>
-      </div>
-      <div class="col-11 d-flex align-items-center">
-        <div v-if="account.id && !activeBug.closed">
-          <div v-if="isTracker">
-            <button @click="unTrackBug()" class="btn theme-btn my-3 mx-2">Un-track</button>
+    <section class="row bug-details-container">
+      <div :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
+        <div class="col-12 my-3 d-flex justify-content-between theme-brown-text">
+          <img :src="activeBug.creator.picture" alt="Bug Creator Picture" class="creator-picture">
+          <div>
+            <p class="mb-0">Reported by:</p>
+            <p>{{ activeBug.creator.name }}</p>
+          </div>
+          <div :class="[activeBug.priority == 5 ? 'danger-border px-2' : '']">
+            <p class="mb-0">Priority:</p>
+            <p class="mb-0">{{ activeBug.priority }}</p>
+          </div>
+          <div>
+            <p class="mb-0">Last Updated:</p>
+            <p>{{ activeBug.updatedAt.toLocaleString() }}</p>
+          </div>
+          <div v-if="!activeBug.closed">
+            <button v-if="activeBug.creatorId == account.id" @click="closeBug()" type="button" class="btn theme-btn me-2"
+              title="Close bug when resolved">Close Bug</button>
+            <button v-else type="text" disabled class="btn theme-btn me-2">
+              This Bug Is Open
+            </button>
           </div>
           <div v-else>
-            <button @click="trackBug()" class="btn theme-btn my-3 mx-2">Track</button>
+            <button type="text" disabled class="btn theme-btn-closed fw-bold me-2">This Bug Is Closed</button>
           </div>
         </div>
-        <div v-for="bug in trackedBugs" :key="bug.id">
-          <img :src="bug.tracker.picture" :alt="bug.tracker.name" class="tracker-picture mx-1 my-3">
+        <div class="col-11 my-4 mx-2 theme-brown-text">
+          <p>{{ activeBug.description }}</p>
         </div>
+        <div class="col-11 d-flex align-items-center">
+          <div v-if="account.id && !activeBug.closed">
+            <div v-if="isTracker">
+              <button @click="unTrackBug()" class="btn theme-btn my-3 mx-2">Un-track</button>
+            </div>
+            <div v-else>
+              <button @click="trackBug()" class="btn theme-btn my-3 mx-2">Track</button>
+            </div>
+          </div>
+          <div v-for="bug in trackedBugs" :key="bug.id">
+            <img :src="bug.tracker.picture" :alt="bug.tracker.name" class="tracker-picture mx-1 my-3">
+          </div>
+        </div>
+      </div>
+      <div class="mt-5 p-0" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
+        <div class="col-2 mx-0 green-box fs-2 fw-bold theme-brown-text text-center">Notes</div>
       </div>
     </section>
   </div>
