@@ -5,7 +5,8 @@
       <div class="col-5 green-box fs-2 fw-bold theme-brown-text text-center">
         <p class="my-2">{{ activeBug.title }}</p>
       </div>
-      <div class="col-1 brown-box">
+      <div data-bs-toggle="modal" data-bs-target="#bugCreatorModal" role="button"
+        v-if="account.id == activeBug.creatorId && !activeBug.closed" class="col-1 brown-box">
         <p class="my-2 fs-2 text-center theme-green-text"><i class="mdi mdi-pencil"></i></p>
       </div>
     </section>
@@ -56,7 +57,9 @@
           </div>
         </div>
       </div>
-      <div v-if="(notes && notes.length > 0 && activeBug.closed) || !activeBug.closed" class="col-12 mt-5 mb-3"
+      <div
+        v-if="(notes && notes.length > 0 && activeBug.closed) || !activeBug.closed && (account.id || notes && notes.length > 0)"
+        class="col-12 mt-5 mb-3"
         :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
         <section class="row">
           <div class="col-2 mx-0 green-box fs-2 fw-bold theme-brown-text text-center">
@@ -215,7 +218,7 @@ export default {
         } catch (error) {
           Pop.error(error)
         }
-      }
+      },
 
     }
   }

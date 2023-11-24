@@ -3,6 +3,7 @@ import { Bug } from "../models/Bug.js"
 import { logger } from "../utils/Logger.js"
 import { api } from "./AxiosService.js"
 import { trackedBugsService } from "./TrackedBugsService.js"
+import { TrackedBug } from "../models/TrackedBug.js"
 
 class BugsService {
 
@@ -30,6 +31,11 @@ class BugsService {
     let newBug = new Bug(res.data)
     AppState.bugs.push(newBug)
     return newBug
+  }
+
+  async editBug(bugData, bugId) {
+    let res = await api.put(`api/bugs/${bugId}`, bugData)
+    this.getBugById(bugId)
   }
 
 }

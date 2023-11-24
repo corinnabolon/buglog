@@ -8,7 +8,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body fs-5">
-          <form @submit.prevent="createBug()">
+          <form @submit.prevent="handleSubmit()">
             <div class="mb-3">
               <label for="bugTitle" class="form-label">Title</label>
               <input v-model="editable.title" type="text" id="bugTitle" name="bugTitle" class="form-control"
@@ -42,19 +42,39 @@
 
 <script>
 import { AppState } from '../AppState';
-import { computed, reactive, onMounted, ref } from 'vue';
+import { computed, reactive, onMounted, watchEffect, ref } from 'vue';
 import Pop from "../utils/Pop.js"
 import { Modal } from "bootstrap";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { bugsService } from "../services/BugsService.js";
 
 export default {
   setup() {
     let editable = ref({})
     let router = useRouter()
+    let route = useRoute()
+
+    watchEffect(() => {
+      if (AppState.activeBug) {
+        editable.value = { ...AppState.activeBug }
+      }
+      else {
+        editable.value = {}
+      }
+    })
 
     return {
       editable,
+
+
+      handleSubmit() {
+        if (!editable.value.id) {
+          this.createBug()
+        }
+        else {
+          this.editBug()
+        }
+      },
 
 
       async createBug() {
@@ -65,6 +85,19 @@ export default {
           editable.value = {}
           Modal.getOrCreateInstance("#bugCreatorModal").hide()
           router.push({ name: "BugDetails", params: { bugId: bug.id } })
+        } catch (error) {
+          Pop.error(error)
+        }
+      },
+
+      async editBug() {
+        try {
+          let bugData = editable.value
+          let bugId = route.params.bugId
+          await bugsService.editBug(bugData, bugId)
+          Pop.success("This bug has been edited.")
+          Modal.getOrCreateInstance("#bugCreatorModal").hide()
+          // editable.value = {} needed?? 
         } catch (error) {
           Pop.error(error)
         }

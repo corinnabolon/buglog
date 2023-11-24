@@ -125,4 +125,9 @@ footer {
   border: 1px solid var(--theme-brown);
   height: 20vh;
 }
+
+.img-shadow {
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.323);
+  transition: ease-in-out 0.4s;
+}
 </style>

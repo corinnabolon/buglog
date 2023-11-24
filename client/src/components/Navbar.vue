@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg theme-blue-bg px-3">
+  <nav class="navbar navbar-expand-lg theme-blue-bg px-3 img-shadow">
     <router-link class="theme-beige-text fs-3 d-flex" :to="{ name: 'Home' }">
       <div class="d-flex flex-column align-items-center">
         <i class="mdi mdi-bug me-2"></i>

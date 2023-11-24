@@ -1,4 +1,5 @@
 import { AppState } from "../AppState.js"
+import { Bug } from "../models/Bug.js"
 import { TrackedBug } from "../models/TrackedBug.js"
 import { logger } from "../utils/Logger.js"
 import { api } from "./AxiosService.js"
@@ -9,6 +10,13 @@ class TrackedBugsService {
     let res = await api.get(`api/bugs/${bugId}/trackedbugs`)
     logger.log("Got trackers", res.data)
     AppState.trackedBugs = res.data.map((trackedBug) => new TrackedBug(trackedBug))
+  }
+
+  async getAllMyTrackedBugs() {
+    let res = await api.get(`account/trackedbugs`)
+    logger.log("My tracked bugs", res.data)
+    AppState.trackedBugs = res.data.map((trackedBug) => new TrackedBug(trackedBug))
+    this.extractBugsFromTrackedBugs()
   }
 
   async trackBug(bugId) {
@@ -34,6 +42,16 @@ class TrackedBugsService {
     }
     await AppState.trackedBugs.forEach((trackedBug) => api.delete(`api/trackedbugs/${trackedBug.id}`))
     AppState.trackedBugs = []
+  }
+
+  extractBugsFromTrackedBugs() {
+    logger.log("Appstate.bugs", AppState.bugs)
+    const bugMap = new Map(AppState.bugs.map(bug => [bug.id, bug]));
+    logger.log("bugMap", bugMap)
+    const trackedBugObjects = AppState.trackedBugs.map(trackedBug => bugMap.get(trackedBug.bugId));
+    logger.log("trackedBugObjects", trackedBugObjects)
+    AppState.bugsUserIsTracking = trackedBugObjects.map((object) => new Bug(object))
+    logger.log("bugsUserIsTracking", AppState.bugsUserIsTracking)
   }
 
 }

@@ -29,14 +29,19 @@
   </section>
   <section class="row bug-list-container">
     <div class="col-1"></div>
-    <div class="col-11">
+    <div v-if="myTrackedBugs.length > 0 && route.name == 'Account'" class="col-11">
+      <div v-for="bug in filteredAndPaginatedMyTrackedBugs" :key="bug.id" class="row bug-list">
+        <BugListComponent :bugProp="bug" />
+      </div>
+    </div>
+    <div v-else class="col-11">
       <div v-for="bug in filteredAndPaginatedItems" :key="bug.id" class="row bug-list">
         <BugListComponent :bugProp="bug" />
       </div>
     </div>
     <div class="d-flex justify-content-around my-3">
-      <button class="btn theme-btn" @click="prevPage()" :disabled="currentPage == 1">Previous</button>
-      <button class="btn theme-btn" @click="nextPage()" :disabled="currentPage == totalPages">Next</button>
+      <button class="btn theme-btn img-shadow" @click="prevPage()" :disabled="currentPage == 1">Previous</button>
+      <button class="btn theme-btn img-shadow" @click="nextPage()" :disabled="currentPage == totalPages">Next</button>
     </div>
   </section>
 </template>
@@ -45,9 +50,11 @@
 <script>
 import { AppState } from '../AppState';
 import { computed, reactive, onMounted, ref } from 'vue';
+import { useRoute } from "vue-router";
+
 export default {
   setup() {
-
+    let route = useRoute()
     let wantsOpenBugs = ref(false)
     let wantsByPriority = ref(false)
     let itemsPerPage = 20
@@ -60,7 +67,32 @@ export default {
       totalPages,
       wantsOpenBugs,
       wantsByPriority,
+      route,
       bugs: computed(() => AppState.bugs),
+
+      myTrackedBugs: computed(() => AppState.bugsUserIsTracking),
+
+      filteredAndPaginatedMyTrackedBugs: computed(() => {
+        let filteredItems = [...AppState.bugsUserIsTracking];
+        if (wantsOpenBugs.value == true) {
+          filteredItems = filteredItems.filter((bug) => bug.closed === false);
+        }
+        if (wantsByPriority.value == true) {
+          filteredItems = [...filteredItems].sort((bug1, bug2) => bug2.priority - bug1.priority);
+        } else {
+          // If !wantsByPriority, sort by date
+          filteredItems = [...filteredItems].sort((bug1, bug2) => {
+            const date1 = new Date(bug1.updatedAt);
+            const date2 = new Date(bug2.updatedAt);
+            return date2 - date1
+          })
+        }
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        totalPages.value = Math.ceil(filteredItems.length / itemsPerPage)
+        const startIndex = (currentPage.value - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return filteredItems.slice(startIndex, endIndex);
+      }),
 
       filteredAndPaginatedItems: computed(() => {
         let filteredItems = [...AppState.bugs];
