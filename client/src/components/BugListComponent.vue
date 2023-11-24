@@ -1,17 +1,19 @@
 <template>
   <router-link :to="{ name: 'BugDetails', params: { bugId: bugProp.id } }">
-    <div class="theme-brown-text my-2 fw-bold fs-5 d-flex" :class="[bugProp.priority == 5 ? 'danger-border' : '']">
-      <div class="col-3" :class="[bugProp.priority == 5 ? 'text-danger' : '']">
-        {{ bugProp.title }}
+    <div class="theme-brown-text my-2 fw-bold fs-5 d-flex" :class="{
+      'danger-border': bugProp.priority == 5
+    }">
+      <div class="col-3" :class="{ 'text-danger': bugProp.priority == 5 }">
+        <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.title }}</p>
       </div>
       <div class="col-2" :class="[bugProp.priority == 5 ? 'text-danger' : '']">
-        {{ bugProp.priority }}
+        <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.priority }}</p>
       </div>
       <div class="col-2">
-        {{ bugProp.creator.name }}
+        <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.creator.name }}</p>
       </div>
       <div class="col-3 me-2">
-        {{ bugProp.updatedAt.toLocaleString() }}
+        <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.updatedAt.toLocaleString() }}</p>
       </div>
       <div class="col-2">
         <div v-if="bugProp.closed" class="d-flex">
@@ -123,5 +125,9 @@ p {
 .danger-border {
   border: 2px solid firebrick;
   padding: 3px;
+}
+
+.strikethrough {
+  text-decoration: line-through;
 }
 </style>

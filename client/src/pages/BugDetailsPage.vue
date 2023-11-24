@@ -12,7 +12,8 @@
     <section class="row justify-content-end me-2">
       <div class="col-11 blue-box"></div>
     </section>
-    <section class="row bug-details-container" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
+    <section class="row bug-details-container"
+      :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
       <div class="col-12 my-3 d-flex justify-content-between theme-brown-text">
         <img :src="activeBug.creator.picture" alt="Bug Creator Picture" class="creator-picture">
         <div>
@@ -186,5 +187,10 @@ export default {
   width: auto;
   object-fit: cover;
   object-position: center;
+}
+
+.blurred {
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.323);
 }
 </style>
