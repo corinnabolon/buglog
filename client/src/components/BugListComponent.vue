@@ -1,10 +1,10 @@
 <template>
   <router-link :to="{ name: 'BugDetails', params: { bugId: bugProp.id } }">
-    <div class="theme-brown-text my-2 fw-bold fs-5 d-flex">
-      <div class="col-3">
+    <div class="theme-brown-text my-2 fw-bold fs-5 d-flex" :class="[bugProp.priority == 5 ? 'danger-border' : '']">
+      <div class="col-3" :class="[bugProp.priority == 5 ? 'text-danger' : '']">
         {{ bugProp.title }}
       </div>
-      <div class="col-2">
+      <div class="col-2" :class="[bugProp.priority == 5 ? 'text-danger' : '']">
         {{ bugProp.priority }}
       </div>
       <div class="col-2">
@@ -118,5 +118,10 @@ p {
 
 .p-width {
   width: 7vw;
+}
+
+.danger-border {
+  border: 2px solid firebrick;
+  padding: 3px;
 }
 </style>

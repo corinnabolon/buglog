@@ -7,12 +7,18 @@
       </div>
     </section>
     <section class="row justify-content-end me-1">
-      <div class="col-11 blue-box ">
-        <section class="row theme-beige-text fw-bold fs-3">
-          <div class="col-3">
+      <div class="col-11 blue-box">
+        <section class="row theme-beige-text fw-bold fs-3 mt-2">
+          <div class="col-2 me-5">
             <p>Title</p>
           </div>
-          <div class="col-2">
+          <div class="col-2 d-flex">
+            <p v-if="!wantsByPriority" class="me-2"><i class="mdi mdi-clipboard-list-outline"
+                @click="flipWantsByPriorityAndWantsByDate()" title="Click to sort by priority" role="button"></i>
+            </p>
+            <p v-else class="me-2"><i class="mdi mdi-clipboard-list" @click="flipWantsByPriorityAndWantsByDate()"
+                title="Click to sort by priority" role="button"></i>
+            </p>
             <p>Priority</p>
           </div>
           <div class="col-2">
@@ -22,7 +28,7 @@
             <p>Last Updated</p>
           </div>
           <div class="col-2 d-flex align-items-center">
-            <input @change="flipWantsAllAndWantsOpen()" type="checkbox" class="toggle"
+            <input @change="flipWantsAllAndWantsOpen()" type="checkbox" class="toggle mb-2"
               :title="[wantsOpenBugs ? 'Click to see all bugs.' : 'Click to see open bugs only.']">
           </div>
         </section>
@@ -31,13 +37,23 @@
     <section class="row bug-list-container">
       <div class="col-1"></div>
       <div class="col-11">
-        <div v-if="!wantsOpenBugs">
-          <div v-for="bug in bugs" :key="bug.id" class="row bug-list">
+        <div v-if="!wantsOpenBugs && !wantsByPriority">
+          <div v-for="bug in bugsByDate" :key="bug.id" class="row bug-list">
+            <BugListComponent :bugProp="bug" />
+          </div>
+        </div>
+        <div v-else-if="!wantsOpenBugs && wantsByPriority">
+          <div v-for="bug in bugsByPriority" :key="bug.id" class="row bug-list">
+            <BugListComponent :bugProp="bug" />
+          </div>
+        </div>
+        <div v-else-if="wantsOpenBugs && wantsByPriority">
+          <div v-for="bug in openBugsByPriority" :key="bug.id" class="row bug-list">
             <BugListComponent :bugProp="bug" />
           </div>
         </div>
         <div v-else>
-          <div v-for="bug in openBugs" :key="bug.id" class="row bug-list">
+          <div v-for="bug in openBugsByDate" :key="bug.id" class="row bug-list">
             <BugListComponent :bugProp="bug" />
           </div>
         </div>
@@ -51,6 +67,7 @@ import Pop from "../utils/Pop.js"
 import { bugsService } from "../services/BugsService.js"
 import { computed, onMounted, ref } from "vue"
 import { AppState } from "../AppState.js"
+import { logger } from "../utils/Logger.js"
 
 export default {
 
@@ -60,6 +77,7 @@ export default {
     })
 
     let wantsOpenBugs = ref(false)
+    let wantsByPriority = ref(false)
 
     async function getBugs() {
       try {
@@ -71,16 +89,48 @@ export default {
 
     return {
       wantsOpenBugs,
+      wantsByPriority,
       bugs: computed(() => AppState.bugs),
-      openBugs: computed(() => {
-        return AppState.bugs.filter(
+      bugsByPriority: computed(() => {
+        return AppState.bugs.sort((bug1, bug2) => bug2.priority - bug1.priority)
+      }),
+      bugsByDate: computed(() => {
+        return AppState.bugs.sort((bug1, bug2) => {
+          const date1 = new Date(bug1.updatedAt);
+          const date2 = new Date(bug2.updatedAt);
+          return date2 - date1;
+        });
+      }),
+      // openBugs: computed(() => {
+      //   return AppState.bugs.filter(
+      //     (bug) => bug.closed == false)
+      // }),
+      openBugsByDate: computed(() => {
+        let bugs = AppState.bugs.filter(
+          (bug) => bug.closed == false)
+        return bugs.sort((bug1, bug2) => {
+          const date1 = new Date(bug1.updatedAt);
+          const date2 = new Date(bug2.updatedAt);
+          return date2 - date1;
+        });
+      }),
+      openBugsByPriority: computed(() => {
+        let bugs = AppState.bugs.sort((bug1, bug2) => bug2.priority - bug1.priority)
+        return bugs.filter(
           (bug) => bug.closed == false)
       }),
       account: computed(() => AppState.account),
 
       flipWantsAllAndWantsOpen() {
         wantsOpenBugs.value = !wantsOpenBugs.value
+      },
+
+      flipWantsByPriorityAndWantsByDate() {
+        wantsByPriority.value = !wantsByPriority.value
+        logger.log("bugsByPriority", this.bugsByPriority)
       }
+
+
     }
   }
 }
