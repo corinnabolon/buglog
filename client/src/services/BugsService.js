@@ -2,6 +2,7 @@ import { AppState } from "../AppState.js"
 import { Bug } from "../models/Bug.js"
 import { logger } from "../utils/Logger.js"
 import { api } from "./AxiosService.js"
+import { trackedBugsService } from "./TrackedBugsService.js"
 
 class BugsService {
 
@@ -19,6 +20,7 @@ class BugsService {
   }
 
   async closeBug(bugId) {
+    await trackedBugsService.deleteAllTrackersOfBug()
     let res = await api.delete(`api/bugs/${bugId}`)
     AppState.activeBug = new Bug(res.data)
   }

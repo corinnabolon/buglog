@@ -63,33 +63,34 @@
             <p class="mb-0">Notes</p>
           </div>
         </section>
-        <section v-if="!activeBug.closed" class="row justify-content-center">
+        <section v-if="!activeBug.closed && account.id" class="row justify-content-center">
           <div class="col-5 d-flex justify-content-center">
             <form @submit.prevent="createNote()">
               <textarea v-model="editable.body" class="mt-5 mb-3" placeholder="Add your notes for this bug here"
-                maxlength="1000"></textarea>
+                maxlength="1000" minlength="3" required></textarea>
               <div class="d-flex justify-content-end">
                 <button type="submit" class="btn theme-btn mb-3">Submit</button>
               </div>
             </form>
           </div>
         </section>
-        <secion class="row">
-          <div v-for="note in  notes " :key="note.id" class="ms-4 me-2">
+        <section class="row">
+          <div v-for="note in notes " :key="note.id" class="ms-4 me-2">
             <div class="d-flex">
-              <div class="col-2 mt-2 green-box fs-4 fw-bold theme-brown-text text-center d-flex justify-content-between">
+              <div class="col-2 mt-4 green-box fs-4 fw-bold theme-brown-text text-center d-flex justify-content-between">
                 <div class="d-flex p-2">
                   <img :src="note.creator.picture" :alt="`${note.creator.name}'s picture'`" class="small-picture me-2">
                   <p class="mb-0">{{ note.creator.name }}</p>
                 </div>
-                <p v-if="account.id == note.creator.id" class="me-2 text-danger"><i class="mdi mdi-close fs-5"></i></p>
+                <p v-if="account.id == note.creator.id" @click="removeNote(`${note.id}`)" role="button"
+                  class="me-2 text-danger"><i class="mdi mdi-close fs-5"></i></p>
               </div>
             </div>
             <div class="col-10 mb-3" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
               <p class="p-2 mb-0">{{ note.body }}</p>
             </div>
           </div>
-        </secion>
+        </section>
       </div>
     </section>
   </div>
@@ -154,7 +155,6 @@ export default {
         AppState.trackedBugs.find((trackedBug) => trackedBug.accountId == AppState.account.id && trackedBug.bugId == AppState.activeBug.id)
       ),
 
-
       async trackBug() {
         try {
           let bugId = route.params.bugId
@@ -198,6 +198,20 @@ export default {
           await notesService.createNote(noteData)
           Pop.success("Note posted!")
           editable.value = {}
+        } catch (error) {
+          Pop.error(error)
+        }
+      },
+
+      async removeNote(noteId) {
+        try {
+          logger.log("Tryina remove note")
+          let wantsToDelete = await Pop.confirm("Are you sure you want to delete this note?")
+          if (!wantsToDelete) {
+            return
+          }
+          await notesService.removeNote(noteId)
+          Pop.success("Note deleted")
         } catch (error) {
           Pop.error(error)
         }

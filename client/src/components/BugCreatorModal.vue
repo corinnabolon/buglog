@@ -12,11 +12,11 @@
             <div class="mb-3">
               <label for="bugTitle" class="form-label">Title</label>
               <input v-model="editable.title" type="text" id="bugTitle" name="bugTitle" class="form-control"
-                placeholder="Bug title" maxlength="30">
+                placeholder="Bug title" maxlength="30" required>
             </div>
             <div class="mb-3">
               <label for="bugPriority" class="form-label">Select Bug Priority (5 is highest)</label>
-              <select v-model="editable.priority" id="bugPriority" name="bugPriority" class="form-select">
+              <select v-model="editable.priority" id="bugPriority" name="bugPriority" class="form-select" required>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -26,8 +26,8 @@
             </div>
             <div class="mb-3 d-flex flex-column">
               <label class="form-label" for="bugDescription" name="bugDescription">Describe the bug here:</label>
-              <textarea v-model="editable.description" id="bugDescription" maxlength="1000" rows="5"
-                placeholder="Bug description"></textarea>
+              <textarea v-model="editable.description" id="bugDescription" maxlength="1000" minlength="5" rows="5"
+                placeholder="Bug description" required></textarea>
             </div>
             <div class="d-flex justify-content-end mb-2">
               <button type="submit" class="btn theme-btn">Submit</button>

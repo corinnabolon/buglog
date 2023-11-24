@@ -28,6 +28,14 @@ class TrackedBugsService {
     AppState.trackedBugs.splice(trackedBugIndex, 1)
   }
 
+  async deleteAllTrackersOfBug() {
+    if(AppState.trackedBugs.length <= 0) {
+      return
+    }
+    await AppState.trackedBugs.forEach((trackedBug) => api.delete(`api/trackedbugs/${trackedBug.id}`))
+    AppState.trackedBugs = []
+  }
+
 }
 
 export const trackedBugsService = new TrackedBugsService()
