@@ -108,6 +108,9 @@ footer {
   background-color: var(--theme-brown);
   border: 1px solid var(--theme-limegreen);
   color: var(--theme-beige);
+}
+
+.square {
   border-radius: 0%;
 }
 
@@ -115,7 +118,6 @@ footer {
   background-color: var(--theme-limegreen);
   border: 3px solid var(--theme-brown);
   color: var(--theme-brown);
-  border-radius: 0%;
 }
 
 .blue-box {

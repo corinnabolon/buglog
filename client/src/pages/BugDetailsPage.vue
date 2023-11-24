@@ -31,12 +31,12 @@
           <div v-if="!activeBug.closed">
             <button v-if="activeBug.creatorId == account.id" @click="closeBug()" type="button" class="btn theme-btn me-2"
               title="Close bug when resolved">Close Bug</button>
-            <button v-else type="text" disabled class="btn theme-btn me-2">
+            <button v-else type="text" disabled class="btn theme-btn square me-2">
               This Bug Is Open
             </button>
           </div>
           <div v-else>
-            <button type="text" disabled class="btn theme-btn-closed fw-bold me-2">This Bug Is Closed</button>
+            <button type="text" disabled class="btn theme-btn-closed fw-bold me-2 square">This Bug Is Closed</button>
           </div>
         </div>
         <div class="col-11 my-4 mx-2 theme-brown-text">
