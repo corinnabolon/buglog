@@ -123,6 +123,7 @@ export default {
     let editable = ref({})
 
     onMounted(() => {
+      bugsService.clearAppState()
       getBugById()
       getTrackersOfBug()
       getNotesByBugId()

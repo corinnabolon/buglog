@@ -35,6 +35,14 @@ class BugsService {
     this.getBugById(bugId)
   }
 
+  clearAppState() {
+    AppState.activeBug = null
+    AppState.bugs.length = 0
+    AppState.notes.length = 0
+    AppState.trackedBugs.length = 0
+    AppState.bugsUserIsTracking = 0
+  }
+
 }
 
 export const bugsService = new BugsService()

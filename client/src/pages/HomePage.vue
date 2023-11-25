@@ -21,6 +21,7 @@ export default {
 
   setup() {
     onMounted(() => {
+      bugsService.clearAppState()
       getBugs()
     })
 

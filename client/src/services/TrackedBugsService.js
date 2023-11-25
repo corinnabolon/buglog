@@ -14,6 +14,9 @@ class TrackedBugsService {
     let res = await api.get(`account/trackedbugs`)
     AppState.trackedBugs = res.data.map((trackedBug) => new TrackedBug(trackedBug))
     this.extractBugsFromTrackedBugs()
+        //Jeremy made them Bugs here and saved them to AppState.bugs, so didn't need the below mapping function?
+    // const newTrackedBugs = res.data.map(pojo => new Bug(pojo.bug))
+    // AppState.bugs = newTrackedBugs
   }
 
   async trackBug(bugId) {
