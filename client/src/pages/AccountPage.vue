@@ -1,10 +1,17 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid position-relative">
     <div v-if="account.id" class="about text-center">
       <h1>Welcome {{ account.name }}</h1>
-      <img class="rounded" :src="account.picture" alt="" />
+      <img class="rounded account-picture" :src="account.picture" alt="" />
       <p>{{ account.email }}</p>
     </div>
+    <section class="row justify-content-end mt-5 mb-3">
+      <div class="col-11 d-flex justify-content-between">
+        <p class="fs-3 theme-green-text fw-bold">Bugs You're Tracking</p>
+        <button v-if="account.id" class="img-shadow btn theme-btn me-3" data-bs-toggle="modal"
+          data-bs-target="#bugCreatorModal">Report Bug</button>
+      </div>
+    </section>
     <BugChartComponent />
   </div>
 </template>
@@ -54,5 +61,10 @@ export default {
 <style scoped>
 img {
   max-width: 100px;
+}
+
+.account-picture {
+  height: 18vh;
+  object-fit: cover;
 }
 </style>

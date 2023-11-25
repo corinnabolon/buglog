@@ -86,7 +86,7 @@
                   <p class="mb-0">{{ note.creator.name }}</p>
                 </div>
                 <p v-if="account.id == note.creator.id" @click="removeNote(`${note.id}`)" role="button"
-                  class="me-2 text-danger"><i class="mdi mdi-close fs-5"></i></p>
+                  class="me-2 text-danger" title="Delete this note"><i class="mdi mdi-close fs-5"></i></p>
               </div>
             </div>
             <div class="col-10 mb-3" :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border']">
@@ -102,13 +102,12 @@
 
 <script>
 import { AppState } from '../AppState';
-import { computed, reactive, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Pop from "../utils/Pop.js";
 import { bugsService } from "../services/BugsService.js";
 import { useRoute } from "vue-router";
 import { trackedBugsService } from "../services/TrackedBugsService.js"
 import { notesService } from "../services/NotesService.js"
-import { logger } from "../utils/Logger.js"
 
 export default {
   setup() {
@@ -208,7 +207,6 @@ export default {
 
       async removeNote(noteId) {
         try {
-          logger.log("Tryina remove note")
           let wantsToDelete = await Pop.confirm("Are you sure you want to delete this note?")
           if (!wantsToDelete) {
             return

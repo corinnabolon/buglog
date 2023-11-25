@@ -6,14 +6,14 @@
       <div class="col-3" :class="{ 'text-danger': bugProp.priority == 5 }">
         <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.title }}</p>
       </div>
-      <div class="col-2" :class="[bugProp.priority == 5 ? 'text-danger' : '']">
+      <div class="col-1" :class="[bugProp.priority == 5 ? 'text-danger' : '']">
         <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.priority }}</p>
       </div>
       <div class="col-2">
-        <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.creator.name }}</p>
+        <p class="ms-5" :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.creator.name }}</p>
       </div>
-      <div class="col-3 me-2">
-        <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.updatedAt.toLocaleString() }}</p>
+      <div class="col-4 me-2">
+        <p :class="{ 'strikethrough': bugProp.closed }">{{ formattedUpdatedAtDateTime }}</p>
       </div>
       <div class="col-2">
         <div v-if="bugProp.closed" class="d-flex">
@@ -42,8 +42,25 @@ import { Bug } from "../models/Bug.js";
 export default {
   props: { bugProp: { type: Bug, required: true } },
 
-  setup() {
-    return {}
+  setup(props) {
+    let formattedDate = props.bugProp.updatedAt.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    let formattedTime = props.bugProp.updatedAt.toLocaleDateString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    });
+
+    let formattedUpdatedAtDateTime = `${formattedDate} ${formattedTime}`;
+
+    return {
+      formattedUpdatedAtDateTime,
+    }
   }
 };
 </script>

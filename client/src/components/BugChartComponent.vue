@@ -5,7 +5,7 @@
         <div class="col-2 me-5">
           <p>Title</p>
         </div>
-        <div class="col-2 d-flex">
+        <div class="col-1 d-flex">
           <p v-if="!wantsByPriority" class="me-2"><i class="mdi mdi-clipboard-list-outline"
               @click="flipWantsByPriorityAndWantsByDate()" title="Click to sort by priority" role="button"></i>
           </p>
@@ -14,8 +14,8 @@
           </p>
           <p>Priority</p>
         </div>
-        <div class="col-2">
-          <p>Reported By</p>
+        <div class="col-3 ms-5">
+          <p class="ms-3">Reported By</p>
         </div>
         <div class="col-3">
           <p>Last Updated</p>
@@ -27,7 +27,7 @@
       </section>
     </div>
   </section>
-  <section class="row bug-list-container">
+  <section class="row" :class="[route.name == 'Account' ? 'tracked-bug-list-container' : 'bug-list-container']">
     <div class="col-1"></div>
     <div v-if="myTrackedBugs.length > 0 && route.name == 'Account'" class="col-11">
       <div v-for="bug in filteredAndPaginatedMyTrackedBugs" :key="bug.id" class="row bug-list">
@@ -40,8 +40,10 @@
       </div>
     </div>
     <div class="d-flex justify-content-around my-3">
-      <button class="btn theme-btn img-shadow" @click="prevPage()" :disabled="currentPage == 1">Previous</button>
-      <button class="btn theme-btn img-shadow" @click="nextPage()" :disabled="currentPage == totalPages">Next</button>
+      <button class="btn theme-btn img-shadow" @click="prevPage()" :disabled="currentPage == 1"
+        title="See previous 20 bugs">Previous</button>
+      <button class="btn theme-btn img-shadow" @click="nextPage()" :disabled="currentPage == totalPages"
+        title="See next 20 bugs">Next</button>
     </div>
   </section>
 </template>
@@ -162,7 +164,15 @@ export default {
   width: 95vw;
 }
 
+.tracked-bug-list-container {
+  position: absolute;
+  left: 2.5%;
+  top: 88%;
+  width: 95vw;
+}
+
 //Toggle styling thanks to https://danklammer.com/articles/simple-css-toggle-switch/!
+
 .toggle {
   -webkit-appearance: none;
   -moz-appearance: none;
