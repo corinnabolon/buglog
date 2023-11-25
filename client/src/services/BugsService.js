@@ -6,6 +6,7 @@ import { trackedBugsService } from "./TrackedBugsService.js"
 class BugsService {
 
   async getBugs() {
+    AppState.activeBug = null
     let res = await api.get('api/bugs')
     AppState.bugs = res.data.map((bug) => new Bug(bug))
   }

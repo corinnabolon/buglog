@@ -6,7 +6,7 @@
       <p>{{ account.email }}</p>
     </div>
     <section class="row justify-content-end mt-5 mb-3">
-      <div class="col-11 d-flex justify-content-between">
+      <div class="col-12 col-md-11 d-flex justify-content-between">
         <p class="fs-3 theme-green-text fw-bold">Bugs You're Tracking</p>
         <button v-if="account.id" class="img-shadow btn theme-btn me-3" data-bs-toggle="modal"
           data-bs-target="#bugCreatorModal">Report Bug</button>
@@ -64,7 +64,7 @@ img {
 }
 
 .account-picture {
-  height: 18vh;
+  height: 10vh;
   object-fit: cover;
 }
 </style>

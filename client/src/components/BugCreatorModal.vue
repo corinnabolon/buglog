@@ -97,7 +97,7 @@ export default {
           await bugsService.editBug(bugData, bugId)
           Pop.success("This bug has been edited.")
           Modal.getOrCreateInstance("#bugCreatorModal").hide()
-          // editable.value = {} needed?? 
+          editable.value = {}
         } catch (error) {
           Pop.error(error)
         }

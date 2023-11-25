@@ -1,6 +1,6 @@
 <template>
   <router-link :to="{ name: 'BugDetails', params: { bugId: bugProp.id } }">
-    <div class="theme-brown-text my-2 fw-bold fs-5 d-flex" :class="{
+    <div class="theme-brown-text my-2 fw-bold font-large d-flex p-3 p-md-0" :class="{
       'danger-border': bugProp.priority == 5
     }">
       <div class="col-3" :class="{ 'text-danger': bugProp.priority == 5 }">
@@ -10,19 +10,19 @@
         <p :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.priority }}</p>
       </div>
       <div class="col-2">
-        <p class="ms-5" :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.creator.name }}</p>
+        <p class="ms-3 ms-md-5" :class="{ 'strikethrough': bugProp.closed }">{{ bugProp.creator.name }}</p>
       </div>
-      <div class="col-4 me-2">
-        <p :class="{ 'strikethrough': bugProp.closed }">{{ formattedUpdatedAtDateTime }}</p>
+      <div class="col-4 ms-3 ms-md-0 me-md-2">
+        <p :class="{ 'strikethrough': bugProp.closed }">{{ formattedDate }}</p>
       </div>
       <div class="col-2">
-        <div v-if="bugProp.closed" class="d-flex">
+        <div v-if="bugProp.closed" class="d-md-flex">
           <div class="p-width">
             <p>Closed</p>
           </div>
           <div class="closed-circle"></div>
         </div>
-        <div v-else class="d-flex">
+        <div v-else class="d-md-flex">
           <div class="p-width">
             <p>Open</p>
           </div>
@@ -48,18 +48,13 @@ export default {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
-    });
-
-    let formattedTime = props.bugProp.updatedAt.toLocaleDateString('en-US', {
       hour: 'numeric',
       minute: 'numeric',
-      hour12: false,
+      hour12: false
     });
 
-    let formattedUpdatedAtDateTime = `${formattedDate} ${formattedTime}`;
-
     return {
-      formattedUpdatedAtDateTime,
+      formattedDate,
     }
   }
 };
@@ -69,6 +64,10 @@ export default {
 <style lang="scss" scoped>
 p {
   margin: 0;
+}
+
+.font-large {
+  font-size: 16pt;
 }
 
 .toggle {
@@ -146,5 +145,15 @@ p {
 
 .strikethrough {
   text-decoration: line-through;
+}
+
+@media (max-width: 768px) {
+  .danger-border {
+    padding-right: 20px;
+  }
+
+  .font-large {
+    font-size: 12pt;
+  }
 }
 </style>

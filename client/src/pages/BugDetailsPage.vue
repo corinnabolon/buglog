@@ -2,11 +2,11 @@
   <div v-if="activeBug" class="container-fluid position-relative">
     <section class="row mt-4 me-2 align-items-center">
       <div class="col-1"></div>
-      <div class="col-5 green-box fs-2 fw-bold theme-brown-text text-center">
+      <div class="col-9 col-md-5 green-box fs-2 fw-bold theme-brown-text text-center">
         <p class="my-2">{{ activeBug.title }}</p>
       </div>
       <div data-bs-toggle="modal" data-bs-target="#bugCreatorModal" role="button"
-        v-if="account.id == activeBug.creatorId && !activeBug.closed" class="col-1 brown-box">
+        v-if="account.id == activeBug.creatorId && !activeBug.closed" class="col-2 brown-box">
         <p class="my-2 fs-2 text-center theme-green-text"><i class="mdi mdi-pencil"></i></p>
       </div>
     </section>
@@ -14,30 +14,37 @@
       <div class="col-11 blue-box"></div>
     </section>
     <section class="row bug-details-container">
-      <div :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
-        <div class="col-12 my-3 d-flex justify-content-between theme-brown-text">
-          <img :src="activeBug.creator.picture" alt="Bug Creator Picture" class="creator-picture">
-          <div>
+      <div class="col-12"
+        :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
+        <div class="row my-3 theme-brown-text">
+          <div class="col-6 col-md-3">
+
+            <img :src="activeBug.creator.picture" alt="Bug Creator Picture" class="creator-picture">
+
+          </div>
+          <div class="col-6 col-md-2">
             <p class="mb-0">Reported by:</p>
             <p>{{ activeBug.creator.name }}</p>
           </div>
-          <div :class="[activeBug.priority == 5 ? 'danger-border px-2' : '']">
+          <div class="col-4 m-3 m-md-0 col-md-2" :class="[activeBug.priority == 5 ? 'danger-border px-md-2' : '']">
             <p class="mb-0">Priority:</p>
             <p class="mb-0">{{ activeBug.priority }}</p>
           </div>
-          <div>
+          <div class="col-6 col-md-2">
             <p class="mb-0">Last Updated:</p>
-            <p>{{ activeBug.updatedAt.toLocaleString() }}</p>
+            <p>{{ formattedDate }}</p>
           </div>
-          <div v-if="!activeBug.closed">
-            <button v-if="activeBug.creatorId == account.id" @click="closeBug()" type="button" class="btn theme-btn me-2"
-              title="Close bug when resolved">Close Bug</button>
-            <button v-else type="text" disabled class="btn theme-btn square me-2">
-              This Bug Is Open
-            </button>
-          </div>
-          <div v-else>
-            <button type="text" disabled class="btn theme-btn-closed fw-bold me-2 square">This Bug Is Closed</button>
+          <div class="col-12 col-md-3">
+            <div v-if="!activeBug.closed">
+              <button v-if="activeBug.creatorId == account.id" @click="closeBug()" type="button"
+                class="btn theme-btn me-2" title="Close bug when resolved">Close Bug</button>
+              <button v-else type="text" disabled class="btn theme-btn square me-2">
+                This Bug Is Open
+              </button>
+            </div>
+            <div v-else>
+              <button type="text" disabled class="btn theme-btn-closed fw-bold me-2 square">This Bug Is Closed</button>
+            </div>
           </div>
         </div>
         <div class="col-11 my-4 mx-2 theme-brown-text">
@@ -62,12 +69,12 @@
         class="col-12 mt-5 mb-3"
         :class="[activeBug.priority == 5 ? 'danger-border' : 'limegreen-border', activeBug.closed ? 'blurred' : '']">
         <section class="row">
-          <div class="col-2 mx-0 green-box fs-2 fw-bold theme-brown-text text-center">
+          <div class="col-4 col-md-2 green-box fs-2 fw-bold theme-brown-text text-center">
             <p class="mb-0">Notes</p>
           </div>
         </section>
         <section v-if="!activeBug.closed && account.id" class="row justify-content-center">
-          <div class="col-5 d-flex justify-content-center">
+          <div class="col-10 col-md-5 d-flex justify-content-center">
             <form @submit.prevent="createNote()">
               <textarea v-model="editable.body" class="mt-5 mb-3" placeholder="Add your notes for this bug here"
                 maxlength="1000" minlength="3" required></textarea>
@@ -80,7 +87,8 @@
         <section class="row">
           <div v-for="note in notes " :key="note.id" class="ms-4 me-2">
             <div class="d-flex">
-              <div class="col-2 mt-4 green-box fs-4 fw-bold theme-brown-text text-center d-flex justify-content-between">
+              <div
+                class="col-6 col-md-2 mt-4 green-box fs-4 fw-bold theme-brown-text text-center d-flex justify-content-between">
                 <div class="d-flex p-2">
                   <img :src="note.creator.picture" :alt="`${note.creator.name}'s picture'`" class="small-picture me-2">
                   <p class="mb-0">{{ note.creator.name }}</p>
@@ -156,6 +164,15 @@ export default {
       isTracker: computed(() =>
         AppState.trackedBugs.find((trackedBug) => trackedBug.accountId == AppState.account.id && trackedBug.bugId == AppState.activeBug.id)
       ),
+      formattedDate: computed(() => AppState.activeBug.updatedAt.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false
+      })),
 
       async trackBug() {
         try {
@@ -274,5 +291,16 @@ textarea {
 .blurred {
   backdrop-filter: blur(10px);
   background-color: rgba(0, 0, 0, 0.323);
+}
+
+@media (max-width: 768px) {
+  .danger-border {
+    padding-right: 0px;
+  }
+
+  textarea {
+    width: 70vw;
+    height: 30vh;
+  }
 }
 </style>

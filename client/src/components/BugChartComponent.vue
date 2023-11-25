@@ -1,26 +1,26 @@
 <template>
   <section class="row justify-content-end me-1">
-    <div class="col-11 blue-box">
-      <section class="row theme-beige-text fw-bold fs-3 mt-2">
-        <div class="col-2 me-5">
+    <div class="col-12 col-md-11 blue-box">
+      <section class="row theme-beige-text fw-bold font-large mt-2">
+        <div class="col-1 col-md-2 me-3 me-md-5">
           <p>Title</p>
         </div>
         <div class="col-1 d-flex">
-          <p v-if="!wantsByPriority" class="me-2"><i class="mdi mdi-clipboard-list-outline"
+          <p v-if="!wantsByPriority" class="me-md-2"><i class="mdi mdi-clipboard-list-outline"
               @click="flipWantsByPriorityAndWantsByDate()" title="Click to sort by priority" role="button"></i>
           </p>
-          <p v-else class="me-2"><i class="mdi mdi-clipboard-list" @click="flipWantsByPriorityAndWantsByDate()"
+          <p v-else class="me-md-2"><i class="mdi mdi-clipboard-list" @click="flipWantsByPriorityAndWantsByDate()"
               title="Click to sort by date" role="button"></i>
           </p>
           <p>Priority</p>
         </div>
-        <div class="col-3 ms-5">
-          <p class="ms-3">Reported By</p>
+        <div class="col-1 col-md-2 me-4 me-md-0 ms-5">
+          <p class="ms-md-3">Creator</p>
         </div>
-        <div class="col-3">
+        <div class="col-2 col-md-3 ms-md-3">
           <p>Last Updated</p>
         </div>
-        <div class="col-2 d-flex align-items-center">
+        <div class="col-3 col-md-2 ms-3 ms-md-0 d-flex align-items-center justify-content-center">
           <input @change="flipWantsAllAndWantsOpen()" type="checkbox" class="toggle mb-2"
             :title="[wantsOpenBugs ? 'Click to see all bugs.' : 'Click to see open bugs only.']">
         </div>
@@ -28,8 +28,8 @@
     </div>
   </section>
   <section class="row" :class="[route.name == 'Account' ? 'tracked-bug-list-container' : 'bug-list-container']">
-    <div class="col-1"></div>
-    <div v-if="myTrackedBugs.length > 0 && route.name == 'Account'" class="col-11">
+    <div class="col-md-1"></div>
+    <div v-if="myTrackedBugs.length > 0 && route.name == 'Account'" class="col-12 col-md-11">
       <div v-for="bug in filteredAndPaginatedMyTrackedBugs" :key="bug.id" class="row bug-list">
         <BugListComponent :bugProp="bug" />
       </div>
@@ -149,6 +149,10 @@ export default {
 
 
 <style lang="scss" scoped>
+.font-large {
+  font-size: 16pt;
+}
+
 .bug-list:nth-child(even) {
   background-color: var(--theme-limegreen);
 }
@@ -219,5 +223,42 @@ export default {
 
 .toggle:checked:before {
   left: 68px;
+}
+
+@media (max-width: 768px) {
+  .bug-list-container {
+    position: absolute;
+    left: 5%;
+    top: 60%;
+    width: 100vw;
+  }
+
+  .tracked-bug-list-container {
+    position: absolute;
+    left: 5%;
+    top: 78%;
+    width: 92vw;
+  }
+
+  .font-large {
+    font-size: 10pt;
+  }
+
+  .toggle {
+    width: 100%;
+    height: 22px;
+  }
+
+  .toggle:before {
+    z-index: 2;
+    width: 15px;
+    height: 18px;
+    text-indent: -35px;
+    word-spacing: 35px;
+  }
+
+  .toggle:checked:before {
+    left: 50px;
+  }
 }
 </style>
